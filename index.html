@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Refined Daily Schedule</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --color-1: #f3eeea;
+            --color-2: #ebe3d5;
+            --color-3: #b0a695;
+            --color-4: #776b5d;
+
+            --bg: var(--color-1);
+            --text: var(--color-4);
+            --highlight: var(--color-3);
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            border-radius: 1.5rem;
+            box-shadow: 0 12px 30px var(--shadow);
+            overflow: hidden;
+        }
+
+        .top-section {
+            background: var(--color-3);
+            padding: 2rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .top-section::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            z-index: 0;
+        }
+
+        .top-section > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .quote-section {
+            font-style: italic;
+            margin-top: 1rem;
+            animation: fadein 0.5s ease-in-out;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .streak-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .streak-item {
+            flex: 1;
+            background: var(--color-2);
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .streak-item:hover {
+            transform: scale(1.05);
+            background: var(--highlight);
+        }
+
+        .streak-number {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-2);
+        }
+
+        .schedule-table thead {
+            background: var(--color-2);
+        }
+
+        .schedule-table tbody tr:hover {
+            background: var(--color-1);
+            transition: background 0.3s ease;
+        }
+
+        .active-row {
+            background: var(--highlight);
+            color: white;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0% { background-color: var(--highlight); }
+            50% { background-color: #9c8f7f; }
+            100% { background-color: var(--highlight); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-section">
+            <h1>Daily Schedule</h1>
+            <p>Aligned with Productivity & Clarity</p>
+            <div class="quote-section" id="quote-block">
+                <p class="quote">"Discipline is choosing between what you want now and what you want most."</p>
+                <p class="quote-author">– Abraham Lincoln</p>
+            </div>
+            <div class="streak-section">
+                <div class="streak-item" onclick="updateStreak('code')" oncontextmenu="decreaseStreak('code', event)" title="Left click to +1, Right click to -1">
+                    <div class="streak-number" id="code">0</div>
+                    <div class="streak-label">Coding</div>
+                </div>
+                <div class="streak-item" onclick="updateStreak('sleep')" oncontextmenu="decreaseStreak('sleep', event)" title="Left click to +1, Right click to -1">
+                    <div class="streak-number" id="sleep">0</div>
+                    <div class="streak-label">Sleep</div>
+                </div>
+                <div class="streak-item" onclick="updateStreak('focus')" oncontextmenu="decreaseStreak('focus', event)" title="Left click to +1, Right click to -1">
+                    <div class="streak-number" id="focus">0</div>
+                    <div class="streak-label">Focus</div>
+                </div>
+            </div>
+        </div>
+        <table class="schedule-table">
+            <thead>
+                <tr><th>Time</th><th>Activity</th></tr>
+            </thead>
+            <tbody>
+                <tr><td>5:00 – 5:15 AM</td><td>Wake, hydrate, breathe, coffee</td></tr>
+                <tr><td>5:15 – 6:00 AM</td><td>Run/HIIT + Stretch</td></tr>
+                <tr><td>6:00 – 6:15 AM</td><td>Cold Shower</td></tr>
+                <tr><td>6:15 – 7:00 AM</td><td>Breakfast + Coffee</td></tr>
+                <tr><td>7:00 – 9:00 AM</td><td>Coding Practice</td></tr>
+                <tr><td>9:00 – 10:15 AM</td><td>Interview Prep</td></tr>
+                <tr><td>10:15 – 11:15 AM</td><td>Mock Interviews / Concepts</td></tr>
+                <tr><td>11:15 – 12:15 PM</td><td>LinkedIn / Resume / Calls</td></tr>
+                <tr><td>12:15 – 1:00 PM</td><td>Lunch + Nap</td></tr>
+                <tr><td>2:00 – 4:00 PM</td><td>Project Work / Upskilling</td></tr>
+                <tr><td>4:00 – 4:30 PM</td><td>Break / Walk</td></tr>
+                <tr><td>5:00 – 8:00 PM</td><td>Peak Focus Blocks</td></tr>
+                <tr><td>8:00 – 9:30 PM</td><td>Dinner / Journal / Unwind</td></tr>
+                <tr><td>9:30 – 10:00 PM</td><td>Prepare for Sleep</td></tr>
+                <tr><td>10:00 PM</td><td><strong>Sleep</strong></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const quoteBlock = document.getElementById("quote-block");
+        const quotes = [
+            { q: "Progress, not perfection.", a: "Anonymous" },
+            { q: "Discipline is the bridge between goals and accomplishment.", a: "Jim Rohn" },
+            { q: "Action is the foundational key to all success.", a: "Pablo Picasso" }
+        ];
+        setInterval(() => {
+            const rand = quotes[Math.floor(Math.random() * quotes.length)];
+            quoteBlock.innerHTML = `<p class='quote'>"${rand.q}"</p><p class='quote-author'>– ${rand.a}</p>`;
+        }, 45000);
+
+        function updateStreak(type) {
+            const el = document.getElementById(type);
+            let val = parseInt(el.textContent) || 0;
+            val += 1;
+            el.textContent = val;
+            el.parentElement.style.transform = "scale(1.2)";
+            setTimeout(() => { el.parentElement.style.transform = "scale(1)" }, 200);
+        }
+
+        function decreaseStreak(type, event) {
+            event.preventDefault(); // Prevent context menu
+            const el = document.getElementById(type);
+            let val = parseInt(el.textContent) || 0;
+            if (val > 0) {
+                val -= 1;
+                el.textContent = val;
+                el.parentElement.style.transform = "scale(0.8)";
+                el.parentElement.style.background = "#d4757a"; // Red feedback
+                setTimeout(() => { 
+                    el.parentElement.style.transform = "scale(1)";
+                    el.parentElement.style.background = "";
+                }, 200);
+            }
+        }
+
+        function parseTimeRange(range) {
+            range = range.trim();
+            // Normalize dash characters to en dash
+            range = range.replace(/[-—–]/g, '–'); // replaces hyphen, em dash, en dash with en dash
+
+            if (range.includes('–')) {
+                const [start, end] = range.split('–').map(t => t.trim());
+                return [to24(start), to24(end)];
+            } else {
+                const t = to24(range);
+                return [t, t + 1];
+            }
+        }
+
+        function to24(time) {
+            const regex = /^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)$/i;
+            const match = time.match(regex);
+            if (!match) {
+                console.warn('Invalid time format:', time);
+                throw new Error('Invalid time format: ' + time);
+            }
+            let h = parseInt(match[1]);
+            let m = match[2] ? parseInt(match[2]) : 0;
+            let period = match[3].toUpperCase();
+            if (period === 'PM' && h !== 12) h += 12;
+            if (period === 'AM' && h === 12) h = 0;
+            return h * 60 + m;
+        }
+
+        function highlightCurrentRow() {
+            const rows = document.querySelectorAll(".schedule-table tbody tr");
+            const now = new Date();
+            const nowMins = now.getHours() * 60 + now.getMinutes();
+            let found = false;
+
+            rows.forEach(row => {
+                row.classList.remove("active-row");
+                const timeCell = row.querySelector("td");
+                if (!timeCell) return;
+                const range = timeCell.textContent;
+                try {
+                    const [start, end] = parseTimeRange(range);
+                    if (nowMins >= start && nowMins < end) {
+                        row.classList.add("active-row");
+                        found = true;
+                    }
+                } catch (e) {
+                    // Ignore parse errors
+                }
+            });
+
+            if (!found) {
+                console.log(`No active row found for current time: ${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}`);
+            }
+        }
+
+        highlightCurrentRow();
+        setInterval(highlightCurrentRow, 60000);
+    </script>
+</body>
+</html>
