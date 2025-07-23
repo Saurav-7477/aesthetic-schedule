@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 10px; border: 1px solid #ccc; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Schedule Test Page</h1>
+    
+    <div class="test-section">
+        <h3>Time Test</h3>
+        <p>Current Time: <span id="current-time">Loading...</span></p>
+        <p>Status: <span id="time-status">Checking...</span></p>
+    </div>
+
+    <div class="test-section">
+        <h3>JavaScript Test</h3>
+        <p>JavaScript Status: <span id="js-status">Checking...</span></p>
+        <button onclick="testClick()">Test Button</button>
+        <p id="button-result"></p>
+    </div>
+
+    <div class="test-section">
+        <h3>Time Parsing Test</h3>
+        <p id="parse-test">Testing...</p>
+    </div>
+
+    <script>
+        console.log("=== DIAGNOSTIC TEST START ===");
+        
+        // Test 1: Basic JavaScript
+        try {
+            document.getElementById('js-status').textContent = "✓ Working";
+            document.getElementById('js-status').className = "success";
+            console.log("✓ Basic JavaScript working");
+        } catch (e) {
+            document.getElementById('js-status').textContent = "✗ Failed: " + e.message;
+            document.getElementById('js-status').className = "error";
+            console.error("✗ Basic JavaScript failed:", e);
+        }
+
+        // Test 2: Time functions
+        function updateTime() {
+            try {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString([], {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+                document.getElementById('current-time').textContent = timeStr;
+                document.getElementById('time-status').textContent = "✓ Working";
+                document.getElementById('time-status').className = "success";
+                console.log("✓ Time functions working:", timeStr);
+            } catch (e) {
+                document.getElementById('time-status').textContent = "✗ Failed: " + e.message;
+                document.getElementById('time-status').className = "error";
+                console.error("✗ Time functions failed:", e);
+            }
+        }
+
+        // Test 3: Button click
+        function testClick() {
+            document.getElementById('button-result').textContent = "✓ Button clicked at " + new Date().toLocaleTimeString();
+            console.log("✓ Button click working");
+        }
+
+        // Test 4: Time parsing (from original file)
+        function testTimeParsing() {
+            try {
+                const testTimes = [
+                    "2:00 – 4:00 PM",
+                    "5:00 – 5:15 AM", 
+                    "10:00 PM"
+                ];
+                
+                let results = [];
+                testTimes.forEach(time => {
+                    const parsed = parseTimeRange(time);
+                    results.push(`"${time}" -> ${parsed ? `[${parsed[0]}, ${parsed[1]}]` : 'null'}`);
+                    console.log(`Time parsing test: "${time}" ->`, parsed);
+                });
+                
+                document.getElementById('parse-test').innerHTML = "✓ Parsing tests:<br>" + results.join('<br>');
+            } catch (e) {
+                document.getElementById('parse-test').textContent = "✗ Parsing failed: " + e.message;
+                document.getElementById('parse-test').className = "error";
+                console.error("✗ Time parsing failed:", e);
+            }
+        }
+
+        function parseTimeString(timeStr) {
+            const time = timeStr.trim().replace(/\s+/g, ' ');
+            const match = time.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+            
+            if (!match) {
+                console.warn('Invalid time format:', timeStr);
+                return null;
+            }
+            
+            let hours = parseInt(match[1]);
+            const minutes = parseInt(match[2]);
+            const period = match[3].toUpperCase();
+            
+            if (period === 'PM' && hours !== 12) {
+                hours += 12;
+            } else if (period === 'AM' && hours === 12) {
+                hours = 0;
+            }
+            
+            return hours * 60 + minutes;
+        }
+
+        function parseTimeRange(rangeStr) {
+            const normalizedRange = rangeStr.replace(/[-—–]/g, '–').trim();
+            
+            if (normalizedRange.includes('–')) {
+                const parts = normalizedRange.split('–').map(t => t.trim());
+                if (parts.length === 2) {
+                    const startTime = parseTimeString(parts[0]);
+                    const endTime = parseTimeString(parts[1]);
+                    
+                    if (startTime !== null && endTime !== null) {
+                        let adjustedEndTime = endTime;
+                        if (endTime < startTime) {
+                            adjustedEndTime = endTime + (24 * 60);
+                        }
+                        return [startTime, adjustedEndTime];
+                    }
+                }
+            } else {
+                const time = parseTimeString(normalizedRange);
+                if (time !== null) {
+                    return [time, time + 60];
+                }
+            }
+            
+            return null;
+        }
+
+        // Initialize tests
+        function runTests() {
+            console.log("Running diagnostic tests...");
+            updateTime();
+            testTimeParsing();
+            
+            // Update time every second
+            setInterval(updateTime, 1000);
+        }
+
+        // Start tests when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', runTests);
+        } else {
+            runTests();
+        }
+
+        console.log("=== DIAGNOSTIC TEST SETUP COMPLETE ===");
+    </script>
+</body>
+</html>
